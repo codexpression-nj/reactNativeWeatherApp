@@ -11,7 +11,6 @@ export default function App() {
   const width = Dimensions.get('window').width
 
   const { daysForecast, isLoading, error, refetch, currentWeather } = useFetch();
-  console.log("he current ... " + isLoading);
   const dailyData = daysForecast?.list.filter((item, index) => index % 8 === 0).map(item => item);
 
   const Item = ({ daily }) => {

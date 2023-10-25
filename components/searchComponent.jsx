@@ -1,19 +1,19 @@
- //import liraries
- import React, { Component, useState, useEffect } from 'react';
- import { View, Text, Image, Dimensions, Card, ImageBackground, TextInput, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView } from 'react-native';
- import { Stack, useRouter } from "expo-router";
- import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
- import { FlatList } from 'react-native-gesture-handler';
- import useFetch from '../hook/useFetch';
- // import { Button,Card} from 'react-native-paper';
- import AsyncStorage from '@react-native-async-storage/async-storage';
- import { COLORS, icons, backGroundImage, weatherImages, SIZES } from '../constants';
- import { Ionicons } from '@expo/vector-icons';
- import { FontAwesome } from '@expo/vector-icons';
- import { AntDesign } from '@expo/vector-icons';
+//import liraries
+import React, { Component, useState, useEffect } from 'react';
+import { View, Text,ToastAndroid, Image, Dimensions, Card, ImageBackground, TextInput, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView } from 'react-native';
+import { Stack, useRouter } from "expo-router";
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+import { FlatList } from 'react-native-gesture-handler';
+import useFetch from '../hook/useFetch';
+// import { Button,Card} from 'react-native-paper';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { COLORS, icons, backGroundImage, weatherImages, SIZES } from '../constants';
+import { Ionicons } from '@expo/vector-icons';
+import { FontAwesome } from '@expo/vector-icons';
+import { AntDesign } from '@expo/vector-icons';
 // create a component
 const SearchComponent = () => {
-    
+
     const width = Dimensions.get('window').width
     const height = Dimensions.get('screen').height
     const placesApiKey = process.env.EXPO_PUBLIC_API_KEY_PLACES;
@@ -25,19 +25,25 @@ const SearchComponent = () => {
     const apiKeyWeather = process.env.EXPO_PUBLIC_API_KEY_WEATHER
 
     const handleSaveLocation = async (location) => {
-       
+
         setSavedLocation([...savedLocations, location.place_id])
         try {
             const jsonValue = JSON.stringify(savedLocations);
             await AsyncStorage.setItem('savedLocation', jsonValue
-            ).then(console.log('saved'));
+            ).then(()=>
+               { 
+                showToast()
+            }
+            );
         } catch (error) {
             // Error saving data
             console.log(error);
         }
     };
+    function showToast() {
+        ToastAndroid.show('Location has been added successfully!', ToastAndroid.LONG);
+      }
 
-    
     const fetchCityweather = async (loc) => {
         await fetch(
             `https://api.openweathermap.org/data/2.5/weather?lat=${loc.lat}&lon=${loc.lng}&appid=${apiKeyWeather}&units=metric`,
@@ -50,12 +56,12 @@ const SearchComponent = () => {
             .catch(err => setErrorMsg(err));
     }
     //Collect all previous saved locations
-    const fetchPlaceKey  = async () =>{
-       
+    const fetchPlaceKey = async () => {
+
         try {
             //  AsyncStorage.clear()
             const value = await AsyncStorage.getItem('savedLocation');
-             value != null ? JSON.parse(value) : null
+            value != null ? JSON.parse(value) : null
         } catch (e) {
             // error reading value
             console.log(e);
@@ -63,30 +69,20 @@ const SearchComponent = () => {
     }
     useEffect(() => {
         fetchPlaceKey()
-     }, []);
+    }, []);
     return (
         <SafeAreaView style={styles.container}>
             {weather ?
-                <ScrollView style={{ marginTop: 60, borderRadius: SIZES.medium, flex: 1,  backgroundColor: COLORS[weather?.weather[0].main] }}>
+                <ScrollView style={{ marginTop: 60, borderRadius: SIZES.medium, flex: 1, backgroundColor: COLORS[weather?.weather[0].main] }}>
                     <View>
                         <View style={styles.currentWeather}>
                             <ImageBackground source={backGroundImage[weather?.weather[0]['main']]} style={[styles.image, { width: width, height: Dimensions.get("screen").height / 2 }]}>
-                                
+
                                 <View style={{ flexDirection: "row", justifyContent: 'center', alignItems: "center" }}>
 
-                                    <Text style={styles.cityName}>{weather.name}</Text>
+                                    <Text style={styles.cityName}>{newLocation.name}</Text>
 
-                                    <TouchableOpacity style={{ flexDirection: "row", alignItems: 'center' }}
 
-                                        onPress={() => {
-                                            let place_id = newLocation.place_id
-                                            console.log(place_id);
-                                            router.push(`/place-details-view/${place_id}`
-                                            );
-                                        }}
-                                    >
-                                        <AntDesign name="infocirlceo" size={20} color="white" />
-                                    </TouchableOpacity>
                                 </View>
 
                                 <View style={{ marginTop: 10 }}>
@@ -95,9 +91,9 @@ const SearchComponent = () => {
                                     </Text>
                                     <Text style={styles.currentCondition}>{weather?.weather[0].main}</Text>
                                 </View>
-                                
+
                             </ImageBackground>
-                            
+
                         </View>
 
                     </View >
@@ -116,8 +112,11 @@ const SearchComponent = () => {
                         </View>
 
                     </View>
-                    <View style={{ backgroundColor: COLORS[weather?.weather[0].main], justifyContent: 'space-between', flexDirection: 'row', margin: 5 }}>
-                        <View style={[styles.tempView, { backgroundColor: 'rgba(52, 52, 52, 0.1)',  borderRadius: 16, height: 60, flex: 1, margin: 5, padding: 5 }]}>
+                    <View style={{
+                        backgroundColor: COLORS[weather?.weather[0].main], borderBottomColor: 'white',
+                        borderBottomWidth: 1, justifyContent: 'space-between', flexDirection: 'row', margin: 5
+                    }}>
+                        <View style={[styles.tempView, { backgroundColor: 'rgba(52, 52, 52, 0.1)', borderRadius: 16, height: 60, flex: 1, margin: 5, padding: 5 }]}>
                             <Text style={{ color: "white", marginBottom: 10 }}>{weather.main.humidity}%</Text>
                             <Text style={{ color: "white" }}>Humidity</Text>
 
@@ -127,13 +126,31 @@ const SearchComponent = () => {
                             <Text style={{ color: "white" }}> Feels Like</Text>
                         </View>
                     </View>
-                    <TouchableOpacity style={{ alignSelf: "center", alignItems: 'center', padding: 10,backgroundColor: COLORS.lightWhite,width:'95%',borderRadius:SIZES.medium }}
-                                    onPress={() => {
-                                        handleSaveLocation(newLocation)
-                                    }}
-                                >
-                                    <Text >SAVE</Text>
-                                </TouchableOpacity >
+
+
+                    <View style={{ flexDirection: "row", alignItems: 'center', padding: SIZES.small, gap: 6 }}>
+                        <TouchableOpacity
+                            style={styles.btn}
+                            onPress={() => {
+                                let place_id = newLocation.place_id
+                                console.log(place_id);
+                                router.push(`/place-details-view/${place_id}`
+                                );
+                            }}
+                        >
+                            {/* <AntDesign name="infocirlceo" size={20} color="white" /> */}
+                            <Text style={{ color: COLORS.backgroundColor }}>About</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={styles.btn}
+                            onPress={() => {
+                                handleSaveLocation(newLocation)
+                            }}
+                        >
+                            <Text style={{ color: COLORS.backgroundColor }} >SAVE</Text>
+                        </TouchableOpacity >
+                    </View>
+
                 </ScrollView>
 
                 : null
@@ -143,7 +160,7 @@ const SearchComponent = () => {
                 <GooglePlacesAutocomplete
                     placeholder="Type a location name"
                     fetchDetails={true}
-                    query={{ key:  placesApiKey}}
+                    query={{ key: placesApiKey }}
                     onPress={(data, details = null) => {
                         setNewLocation(details)
                         fetchCityweather(details.geometry.location)
@@ -223,7 +240,7 @@ const styles = StyleSheet.create({
         color: COLORS.lightWhite,
         fontWeight: '300',
         fontSize: 24,
-         alignSelf: 'center'
+        alignSelf: 'center'
     },
 
     cityName: {
@@ -231,7 +248,7 @@ const styles = StyleSheet.create({
         color: COLORS.lightWhite,
         fontSize: 20,
         paddingHorizontal: 10,
-        paddingVertical:20
+        paddingVertical: 20
     },
     temp: {
         fontSize: 40,
@@ -241,7 +258,14 @@ const styles = StyleSheet.create({
     },
     tempView: {
         alignItems: 'center',
-      },
+    },
+    btn: {
+        alignSelf: "center",
+        alignItems: 'center',
+        padding: 10,
+        backgroundColor: COLORS.lightWhite,
+        flex: 1, borderColor: COLORS.backgroundColor, borderWidth: 1
+    }
 });
 
 //make this component available to the app

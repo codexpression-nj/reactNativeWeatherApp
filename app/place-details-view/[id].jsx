@@ -7,12 +7,12 @@ import { COLORS, SIZES } from '../../constants';
 // create a component
 const PlaceDetailCard = () => {
     const params = useLocalSearchParams();
-    const router = useRouter();
     const place_id = params.id
     const placeId = place_id;
     const apiKey = process.env.EXPO_PUBLIC_API_KEY_PLACES;
     const [placeDetails, setPlaceDetails] = useState([]);
-
+    const [noData,setNoData] = useState()
+    const [error,setError] = useState()
     useEffect(() => {
         const apiUrl = `https://maps.googleapis.com/maps/api/place/details/json?placeid=${placeId}&key=${apiKey}`;
 
@@ -32,10 +32,10 @@ const PlaceDetailCard = () => {
     }, []);
     const getPlaceCategories = () => {
         if (placeDetails.types && placeDetails.types.length > 0) {
-          return placeDetails.types.join(', ');
+            return placeDetails.types.join(', ');
         }
-        return 'No categories available'; // Display a message when no categories are found
-      };
+        return 'No categories available'; 
+    };
     return (
         <SafeAreaView style={styles.container}>
 
@@ -45,56 +45,57 @@ const PlaceDetailCard = () => {
                     headerShown: true,
                     headerShadowVisible: false,
                     headerBlurEffect: 'extraLight',
-                   
-                 
+
+
                     headerTitle: "",
                 }}
             />
-            <View style={{marginTop:100}}>
+            <View style={{ marginTop: 60 }}>
 
-            
-            <ScrollView >
-                <View style={styles.detailsContainer}>
-                    <Text style={styles.placeName}>{placeDetails.name}</Text>
-                    <View style={styles.contentView}>
-                    <Text style={{fontWeight:"300"}}> {placeDetails.formatted_address}</Text>
-                    <Text style={{fontWeight:"300"}}>{placeDetails.formatted_phone_number}</Text>
-                    </View>
-                    
-                    <View style={styles.contentView}>
-                        <Text style={styles.contentView}>Rating</Text>
+                <ScrollView >
+                    <View style={styles.detailsContainer}>
+                        <Text style={styles.placeName}>{placeDetails.name}</Text>
+                        <View style={styles.contentView}>
+                            <Text style={styles.textHeader}>Address</Text>
+                            <Text style={styles.context}> {placeDetails.formatted_address}</Text>
+                        </View>
+                        <View style={styles.contentView}>
+                            <Text style={styles.textHeader}>Phonenumber</Text>
+                            <Text  style={styles.context}>{placeDetails.formatted_phone_number}</Text>
+                        </View>
+                        <View style={styles.contentView}>
+                            <Text style={styles.textHeader}>Rating</Text>
+                            <Text  style={styles.context}>{placeDetails.rating}</Text>
+                        </View>
+                        <View style={styles.contentView}>
+                            <Text style={styles.textHeader}>
+                                Place Categories:
+                            </Text>
+                            <Text  style={styles.context}>
+                                {getPlaceCategories()}
+                            </Text>
+                        </View>
 
-                        <Text style={{fontWeight:"300"}}>{placeDetails.rating}</Text>
-                    </View>
-                    <View style={styles.contentView}> 
-                    <Text style={styles.textHeader}>
-                    Place Categories:
-                    </Text>
-                    <Text  style={{fontWeight:"300"}}>
-           {getPlaceCategories()}
-        </Text>  
-                    </View>
-                  
+                        {/* get place photos if available  */}
+                        {placeDetails.photos && placeDetails.photos.length > 0 ? (
+                            <ScrollView horizontal>
+                                {placeDetails.photos.map((photo, index) => (
+                                    <Image
+                                        key={index}
+                                        source={{
+                                            uri: `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${photo.photo_reference}&key=${apiKey}`,
+                                        }}
+                                        style={styles.placePhoto}
+                                    />
+                                ))}
+                            </ScrollView>
+                        ) : (
+                            <Text style={styles.notAvailableText}>Photos: Not available</Text>
+                        )
+                        }
 
-                    {placeDetails.photos && placeDetails.photos.length > 0 ? (
-                        <ScrollView horizontal>
-                            {placeDetails.photos.map((photo, index) => (
-                                <Image
-                                    key={index}
-                                    source={{
-                                        uri: `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${photo.photo_reference}&key=${apiKey}`,
-                                    }}
-                                    style={styles.placePhoto}
-                                />
-                            ))}
-                        </ScrollView>
-                    ): (
-                        <Text style={styles.notAvailableText}>Photos: Not available</Text>
-                      )
-                }
-                    
-                </View>
-            </ScrollView>
+                    </View>
+                </ScrollView>
             </View>
         </SafeAreaView>
     );
@@ -107,11 +108,11 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: COLORS.backgroundColor,
-        padding:SIZES.medium
+        padding: SIZES.medium
     },
-    contentView:{
+    contentView: {
         width: '100%',
-        marginTop:SIZES.medium
+        marginTop: SIZES.medium
     },
     scrollViewContent: {
         alignItems: 'center',
@@ -124,18 +125,23 @@ const styles = StyleSheet.create({
     placeName: {
         fontSize: 20,
         fontWeight: 'bold',
+        color: COLORS.lightWhite
     }, placePhoto: {
-        marginTop:SIZES.medium,
+        marginTop: SIZES.medium,
         width: 300,
         height: 200,
-        borderRadius:SIZES.medium,
+        borderRadius: SIZES.medium,
         marginRight: 10, // Add spacing between photos
     },
     textHeader: {
         marginVertical: 10,
-        fontWeight:'600',
-
-      },
+        fontWeight: '600',
+        color:COLORS.lightWhite
+    },
+    context:{
+        fontWeight:'300',
+        color:COLORS.lightWhite
+    }
 });
 
 //make this component available to the app

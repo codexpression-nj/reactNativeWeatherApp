@@ -60,9 +60,8 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         justifyContent: "center",
         alignItems: "center",
-        margin:10,
+        marginVertical:10,
         padding:5,
-       alignSelf:'flex-end'
       },
       searchBtnImage: {
         width: "100%",

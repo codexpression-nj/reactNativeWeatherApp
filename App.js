@@ -11,34 +11,8 @@ export default function App() {
   const width = Dimensions.get('window').width
 
   const { daysForecast, isLoading, error, refetch, currentWeather } = useFetch();
-
+  console.log("he current ... " + isLoading);
   const dailyData = daysForecast?.list.filter((item, index) => index % 8 === 0).map(item => item);
-  const [errorMsg, setErrorMsg] = useState(null);
-  const [newLocation, setNewLocation] = useState(null)
-
-  useEffect(() => {
-    (async () => {
-
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        // setErrorMsg('Permission to access location was denied');
-        console.log('permission denied');
-        return;
-      }
-        let loc = await Location.getCurrentPositionAsync({});
-        
-        try {
-          const jsonValue = JSON.stringify(loc);
-          await AsyncStorage.setItem('currentLocation',  jsonValue,
-          setNewLocation(loc)
-          );
-        } catch (error) {
-          // Error saving data
-          console.log(error);
-        }
-      
-    })();
-  }, []);
 
   const Item = ({ daily }) => {
     const date = new Date(daily.dt * 1000)
@@ -55,14 +29,13 @@ export default function App() {
     )
   };
 
-
   return (
     
     <View style={[styles.container, { backgroundColor: COLORS[currentWeather?.weather[0].main] }]}>
       {isLoading ? (
         <ActivityIndicator />
       ) : error ? (
-        <Text>Ooops</Text>
+        <Text>Ooops.. Coulding fetch data </Text>
       ) : (
         <View>
           <View style={styles.currentWeather}>
@@ -95,9 +68,7 @@ export default function App() {
           <FlatList
             data={dailyData}
             renderItem={({ item }) => <Item daily={item} />}
-            // keyExtractor={item => item?.dt}
-            // keyExtractor={(item, idx) => `${Object.keys(item)}-${idx}`}
-
+            keyExtractor={(item, idx) => `${Object.keys(item)}-${idx}`}
             style={styles.scrollView}
           />
         </View>

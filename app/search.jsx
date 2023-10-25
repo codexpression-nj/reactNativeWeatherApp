@@ -8,8 +8,6 @@ import SearchComponent from '../components/searchComponent';
 
 // create a component
 const Search = () => {
-    const width = Dimensions.get('window').width
-    const height = Dimensions.get('screen').height
     const router = useRouter()
 
     return (
@@ -24,13 +22,13 @@ const Search = () => {
                 headerTitle: "Search",
            
                 headerRight: () => (
-                    <TouchableOpacity style={styles.searchBtn} 
+                    <TouchableOpacity style={styles.favBtn} 
                         onPress={()=> router.push(`/locationsList/`)}
                     >
                         <Image
                             source={icons.heart}
                             resizeMode='contain'
-                            style={styles.searchBtnImage}
+                            style={styles.favBtnImage}
                         />
                     </TouchableOpacity>
                 ),
@@ -51,19 +49,17 @@ const styles = StyleSheet.create({
         // alignItems: 'center',
         backgroundColor: COLORS.backgroundColor,
     },
-    searchBtn: {
+    favBtn: {
         width: 30,
         height: "100%",
         backgroundColor: 'white',
         borderRadius: 20,
         justifyContent: "center",
         alignItems: "center",
-        margin:10,
-        padding:5,
-       alignSelf:'flex-end',
-    //   paddingTop:15
+        marginVertical:10,
+        paddingVertical:5,
       },
-      searchBtnImage: {
+      favBtnImage: {
         width: "100%",
         height: "100%",
         tintColor: COLORS.backgroundColor,

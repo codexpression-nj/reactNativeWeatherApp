@@ -5,7 +5,6 @@ export const unstable_settings = {
     initialRouteName: "home",
   };
   
-  
   const Layout = () => {
     
     return (

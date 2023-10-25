@@ -44,9 +44,10 @@ const SearchComponent = () => {
         )
             .then(res => res.json())
             .then((res) => {
+                console.log(res);
                 setWeather(res)
             })
-            .catch(err => console.log(err));
+            .catch(err => setErrorMsg(err));
     }
     //Collect all previous saved locations
     const fetchPlaceKey  = async () =>{
@@ -92,7 +93,7 @@ const SearchComponent = () => {
                                     <Text style={styles.currentTemp}>
                                         {Math.round(weather?.main.temp)} &deg;
                                     </Text>
-                                    <Text style={styles.currentCondition}>{weather?.weather[0].description}</Text>
+                                    <Text style={styles.currentCondition}>{weather?.weather[0].main}</Text>
                                 </View>
                                 
                             </ImageBackground>
@@ -145,7 +146,6 @@ const SearchComponent = () => {
                     query={{ key:  placesApiKey}}
                     onPress={(data, details = null) => {
                         setNewLocation(details)
-                        console.log(details.place_id);
                         fetchCityweather(details.geometry.location)
                     }}
                     onFail={error => console.log(error)}
@@ -230,7 +230,8 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         color: COLORS.lightWhite,
         fontSize: 20,
-        paddingHorizontal: 10
+        paddingHorizontal: 10,
+        paddingVertical:20
     },
     temp: {
         fontSize: 40,

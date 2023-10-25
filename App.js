@@ -1,7 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, Dimensions, ImageBackground, View, Image, ActivityIndicator, FlatList, ScrollView, TouchableOpacity } from 'react-native';
 import useFetch from './hook/useFetch';
-import { COLORS,icons, backGroundImage, weatherImages } from './constants';
+import { COLORS, icons, backGroundImage, weatherImages } from './constants';
 import React, { useState, useEffect } from 'react';
 import * as Location from 'expo-location';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -29,7 +29,7 @@ export default function App() {
   };
 
   return (
-    
+
     <View style={[styles.container, { backgroundColor: COLORS[currentWeather?.weather[0].main] }]}>
       {isLoading ? (
         <ActivityIndicator />
@@ -37,17 +37,21 @@ export default function App() {
         <Text>Ooops.. Coulding fetch data </Text>
       ) : (
         <View>
-          <View style={styles.currentWeather}>
-            <ImageBackground source={backGroundImage[currentWeather?.weather[0]['main']]} style={[styles.image, { width: width, }]}>
-            
-              <View style={{ marginTop: 80 }}>
-                <Text style={styles.currentTemp} >
-                  {Math.round(currentWeather?.main.temp)} &deg;
-                </Text>
-                <Text style={styles.currentCondition}>{currentWeather?.weather[0].description}</Text>
-              </View>
-            </ImageBackground>
-          </View>
+         
+
+            <View style={styles.currentWeather}>
+              <ImageBackground source={backGroundImage[currentWeather?.weather[0]['main']]} style={[styles.image, { width: width, }]}>
+
+                <View style={{ marginTop: 80 }}>
+                  <Text style={styles.currentTemp} >
+                    {Math.round(currentWeather?.main.temp)} &deg;
+                  </Text>
+                  <Text style={styles.currentCondition}>{currentWeather?.weather[0].description}</Text>
+                </View>
+              </ImageBackground>
+            </View>
+
+        
 
           <View style={[styles.currentWeatherDetails, { backgroundColor: COLORS[currentWeather?.weather[0].main] }]}>
             <View style={styles.tempView}>
@@ -63,13 +67,16 @@ export default function App() {
               <Text style={{ color: "white" }}>Max</Text>
             </View>
           </View>
-
+          {isLoading ? (
+            <ActivityIndicator />
+          ) :
           <FlatList
             data={dailyData}
             renderItem={({ item }) => <Item daily={item} />}
             keyExtractor={(item, idx) => `${Object.keys(item)}-${idx}`}
             style={styles.scrollView}
           />
+}
         </View>
       )}
     </View>
@@ -80,7 +87,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     display: 'flex',
-    backgroundColor:COLORS.backgroundColor,
+    backgroundColor: COLORS.backgroundColor,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -142,8 +149,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     justifyContent: "center",
     alignItems: "center",
-    margin:10,
-   alignSelf:'flex-end'
+    margin: 10,
+    alignSelf: 'flex-end'
   },
   searchBtnImage: {
     width: "90%",

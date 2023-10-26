@@ -63,7 +63,8 @@ To build and run the project, follow these steps:
    Run the app on an emulator or physical device:
 
  ```bash
- npx react-native run-android
+  
+ npx expo start  
 
 
 Access the app on your mobile device.

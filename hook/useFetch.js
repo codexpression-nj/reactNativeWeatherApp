@@ -32,7 +32,6 @@ const useFetch = () => {
           setCurrentWeather(res)
           if(res){
             
-            // setIsLoading(true)r
             fetch(
               `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${log}&appid=${apiWeatherKey}&cnt=40&units=metric`,
             )
@@ -44,7 +43,7 @@ const useFetch = () => {
               })
               .catch((err) => {
                 setError('err')
-                setIsLoading(false)
+                // setIsLoading(false)
                 console.log('r00r' + err)
               })
           }else{
@@ -58,46 +57,6 @@ const useFetch = () => {
 
   
 
-  // get user current location and requesting device permission
-  // const getLocation = async () => {
-  //   try {
-  //     let { status } = await Location.requestForegroundPermissionsAsync();
-  //     if (status !== 'granted') {
-  //       setError('You need to permit the app to use location of your device')
-  //       console.log('permission denied');
-  //       return;
-  //     }
-  //     let loc = await Location.getCurrentPositionAsync({});
-      
-  //     setCityName(loc)
-  //     return loc
-  //   } catch (error) {
-  //     setError('no data ')
-  //     console.log('locwc ' + error);
-  //   }
-  // }
-
-  // fetching 7 days weather forecast for user location
-  const fetchData = async () => {
-
-   
-      fetch(
-        `https://api.openweathermap.org/data/2.5/forecast?lat=${loc.lat}&lon=${loc.log}&appid=${apiWeatherKey}&cnt=40&units=metric`,
-      )
-        .then(res => res.json())
-        .then((res) => {
-          setDaysForecastData(res)
-          setIsLoading(false);
-        })
-        .catch((err) => {
-          setError('err')
-          setIsLoading(false)
-          console.log('r00r' + err)
-        })
-        
-    
-  };
-
   useEffect(() => {
     // getLocation();
     fetchCurrentData();
@@ -105,9 +64,8 @@ const useFetch = () => {
   }, []);
 
   const refetch = () => {
-    setIsLoading(true);
     fetchCurrentData()
-    fetchData();
+    // fetchData();
   };
 
 

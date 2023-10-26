@@ -12,7 +12,7 @@ export default function App() {
 
   const { daysForecast, isLoading, error, refetch, currentWeather } = useFetch();
   const dailyData = daysForecast?.list.filter((item, index) => index % 8 === 0).map(item => item);
-
+  console.log(isLoading);
   const Item = ({ daily }) => {
     const date = new Date(daily.dt * 1000)
     let dayName = date.toUTCString();
@@ -37,21 +37,21 @@ export default function App() {
         <Text>Ooops.. Coulding fetch data </Text>
       ) : (
         <View>
-         
 
-            <View style={styles.currentWeather}>
-              <ImageBackground source={backGroundImage[currentWeather?.weather[0]['main']]} style={[styles.image, { width: width, }]}>
 
-                <View style={{ marginTop: 80 }}>
-                  <Text style={styles.currentTemp} >
-                    {Math.round(currentWeather?.main.temp)} &deg;
-                  </Text>
-                  <Text style={styles.currentCondition}>{currentWeather?.weather[0].description}</Text>
-                </View>
-              </ImageBackground>
-            </View>
+          <View style={styles.currentWeather}>
+            <ImageBackground source={backGroundImage[currentWeather?.weather[0]['main']]} style={[styles.image, { width: width, }]}>
 
-        
+              <View style={{ marginTop: 80 }}>
+                <Text style={styles.currentTemp} >
+                  {Math.round(currentWeather?.main.temp)} &deg;
+                </Text>
+                <Text style={styles.currentCondition}>{currentWeather?.weather[0].description}</Text>
+              </View>
+            </ImageBackground>
+          </View>
+
+
 
           <View style={[styles.currentWeatherDetails, { backgroundColor: COLORS[currentWeather?.weather[0].main] }]}>
             <View style={styles.tempView}>
@@ -67,16 +67,14 @@ export default function App() {
               <Text style={{ color: "white" }}>Max</Text>
             </View>
           </View>
-          {isLoading ? (
-            <ActivityIndicator />
-          ) :
-          <FlatList
-            data={dailyData}
-            renderItem={({ item }) => <Item daily={item} />}
-            keyExtractor={(item, idx) => `${Object.keys(item)}-${idx}`}
-            style={styles.scrollView}
-          />
-}
+        
+            <FlatList
+              data={dailyData}
+              renderItem={({ item }) => <Item daily={item} />}
+              keyExtractor={(item, idx) => `${Object.keys(item)}-${idx}`}
+              style={styles.scrollView}
+            />
+          
         </View>
       )}
     </View>

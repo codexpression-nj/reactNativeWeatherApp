@@ -2,6 +2,7 @@
 ## Table of Contents
 
 - [Overview](#overview)
+- [Screenshots](#screenshots)
 - [Architecture](#architecture)
 - [API Integration](#api-integration)
 - [Building the Project](#building-the-project)
@@ -11,7 +12,9 @@
 
 The Weather App is a React Native Expo mobile application that provides real-time weather information based on the user's current location. It also includes features like saving and viewing favorite locations and extra information about specific locations.Google Places API is used for location services.
 
+## Screenshots
 
+![current Location weather](https://github.com/codexpression-nj/reactNativeWeatherApp/assets/64089457/9da2cb4a-6d31-4a04-8c03-b0673e160108)
 
 ## Conventions
 
